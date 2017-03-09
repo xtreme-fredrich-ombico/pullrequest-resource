@@ -34,6 +34,18 @@ class PullRequest
     @pr['head']['sha']
   end
 
+  def trigger_comment_ids
+    comment_ids = []
+
+    comments.each do |comment|
+      if /(concourse,? )?(re-?)?(test|build) this,? please(,? concourse)?/i.match(comment[:body])
+        comment_ids << comment[:id]
+      end
+    end
+
+    return comment_ids
+  end
+
   def url
     @pr['html_url']
   end
@@ -47,4 +59,9 @@ class PullRequest
   def head_repo
     @pr['head']['repo']['full_name']
   end
+
+  def comments
+    Octokit::issue_comments head_repo, id
+  end
+
 end
