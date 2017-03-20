@@ -3,3 +3,4 @@
 example/
 .bundle
 bin
+.DS_Store

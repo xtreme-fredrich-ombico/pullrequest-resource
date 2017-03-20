@@ -39,7 +39,7 @@ module Commands
       if id.empty?
         version = { 'ref' => sha }
       else
-        pr = PullRequest.from_github(repo: repo, id: id)
+        pr = PullRequest.from_github(repo: repo, id: id, input: input)
         metadata << { 'name' => 'url', 'value' => pr.url }
         version = { 'pr' => id, 'ref' => sha }
       end

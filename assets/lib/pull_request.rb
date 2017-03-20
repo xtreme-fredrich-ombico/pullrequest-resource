@@ -1,13 +1,14 @@
 require 'octokit'
 
 class PullRequest
-  def self.from_github(repo:, id:)
+  def self.from_github(repo:, id:, input: Input.instance)
     pr = Octokit.pull_request(repo.name, id)
-    PullRequest.new(pr: pr)
+    PullRequest.new(pr: pr, input: input)
   end
 
-  def initialize(pr:)
+  def initialize(pr:, input: Input.instance)
     @pr = pr
+    @input = input
   end
 
   def from_fork?
@@ -38,7 +39,9 @@ class PullRequest
     comment_ids = []
 
     comments.each do |comment|
-      if /(concourse,? )?(re-?)?(test|build) this,? please(,? concourse)?/i.match(comment[:body])
+      if @input.source.trigger_message.match(comment[:body])
+        comment_ids << comment[:id]
+      elsif /(concourse,? )?(re-?)?(test|build) this,? please(,? concourse)?/i.match(comment[:body])
         comment_ids << comment[:id]
       end
     end
