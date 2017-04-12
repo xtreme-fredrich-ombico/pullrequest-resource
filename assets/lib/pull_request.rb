@@ -39,9 +39,9 @@ class PullRequest
     comment_ids = []
 
     comments.each do |comment|
-      if @input.source.trigger_message.to_s.downcase.match(comment[:body].to_s.downcase.strip)
+      if comment[:body].to_s.downcase.strip.match(@input.source.trigger_message.to_s.downcase)
         comment_ids << comment[:id]
-      elsif /(concourse,? )?(re-?)?(test|build) this,? please(,? concourse)?/i.match(comment[:body])
+      elsif comment[:body].match(/(concourse,? )?(re-?)?(test|build) this,? please(,? concourse)?/i)
         comment_ids << comment[:id]
       end
     end
